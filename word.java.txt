@@ -1,0 +1,79 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.LinkedHashMap;
+import java.util.*;
+
+ class WordCounterGUIAlternative extends JFrame {
+    private JTextArea inputTextArea;
+    private JTextField delimiterField;
+    private JTextArea outputTextArea;
+    private JButton analyzeButton;
+
+    public WordCounterGUIAlternative() {
+        setTitle("Word Counter Alternative GUI");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        inputTextArea = new JTextArea(8, 40);
+        delimiterField = new JTextField(15);
+        outputTextArea = new JTextArea(15, 40);
+        analyzeButton = new JButton("Analyze");
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(2, 2));
+        inputPanel.add(new JLabel("Enter text:"));
+        inputPanel.add(new JScrollPane(inputTextArea));
+        inputPanel.add(new JLabel("Enter delimiter:"));
+        inputPanel.add(delimiterField);
+
+        add(inputPanel, BorderLayout.NORTH);
+        add(new JScrollPane(outputTextArea), BorderLayout.CENTER);
+        add(analyzeButton, BorderLayout.SOUTH);
+
+        analyzeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                analyzeText();
+            }
+        });
+    }
+
+    private void analyzeText() {
+        String inputText = inputTextArea.getText();
+        String delimiter = delimiterField.getText();
+
+        if (inputText.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter valid text.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String[] arr = inputText.split(delimiter);
+        outputTextArea.setText("");
+
+        LinkedHashMap<String, Integer> hm = new LinkedHashMap<>();
+        for (String word : arr) {
+            hm.put(word, hm.getOrDefault(word, 0) + 1);
+        }
+
+        outputTextArea.append("Total number of words: " + arr.length + "\n");
+        outputTextArea.append("Number of unique words: " + hm.size() + "\n\n");
+        outputTextArea.append("Frequencies of each word:\n\n");
+
+        for (Map.Entry<String, Integer> entry : hm.entrySet()) {
+            outputTextArea.append(entry.getKey() + " : " + entry.getValue() + "\n");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                WordCounterGUIAlternative app = new WordCounterGUIAlternative();
+                app.setVisible(true);
+            }
+        });
+    }
+}
